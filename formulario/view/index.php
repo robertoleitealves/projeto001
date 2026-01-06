@@ -9,8 +9,8 @@
 </head>
 
 <body>
-    <h5>CALCULADORA</h5>
-    <form>
+    <h5>FORMULARIO</h5>
+    <form action="cap.php" method="get">
 
         <label class="form-label">Digite um número: </label>
         <input type="number" class="form-control" id='num1' value='0'>
