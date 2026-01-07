@@ -15,23 +15,24 @@
     $mensagem = '';
     if (isset($_POST['enviar'])) {
         $erros = array();
-        $idade = $_POST['idade'];
-        $email = $_POST['email'];
-        $nome = $_POST['nome'];
-        $genero = $_POST['genero'];
 
-        if (!$idade = filter_input(INPUT_POST, 'idade', FILTER_VALIDATE_INT)) {
+        $nome_sujo = filter_input(INPUT_POST, 'nome', FILTER_DEFAULT);
+        $nome = preg_replace("/[^a-zA-ZÀ-ÿ\s]/u", "", $nome_sujo);
+        $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)){
+            $erros[] = 'Informe um e-mail válido';
+        }
+        $idade = filter_input(INPUT_POST, 'idade', FILTER_SANITIZE_NUMBER_INT);
+        if (!filter_var($idade, FILTER_VALIDATE_INT)) {
             $erros[] = 'Idade deve ser um numero inteiro';
         }
-        if (!$email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL)) {
-            $erros[] = 'Digite um email válido';
-        }
+
         if ($nome == '') {
             $erros[] = 'Informe seu nome';
         }
         if (empty($erros)) {
-            $mensagem = ($genero == 'M') ? "Seja Bem Vindo " : "Seja Bem Vinda";
-            $mensagem .= " $nome !!!<br> Seu email é $email e sua idade é $idade";
+
+            $mensagem .= "Olá $nome !!!<br> Seu email é $email e sua idade é $idade";
         }
     }
     ?>
@@ -42,13 +43,13 @@
         <label class="form-label">EMAIL: </label>
         <input type="text" class="form-control" name='email' value=''>
         <label class="form-label">IDADE: </label>
-        <input type="number" class="form-control" name='idade' value='0'>
+        <input type="text" class="form-control" name='idade' value='0'>
         <div class="resultado">
             <label class="form-label" id="total"><?php echo $mensagem ?></label>
             <?php
             if (!empty($erros)) {
                 foreach ($erros as $erro) {
-                    echo "<li>$erro</li>";
+                    echo "<li>$erro</li><br>";
                 }
             }
             ?>
